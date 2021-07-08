@@ -1,10 +1,8 @@
-
-
-var playerVelocity = 100;
+var playerVelocity = 150;
 var config = {        
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 960,
     physics: {
         default: 'arcade',
         arcade: {
@@ -19,20 +17,31 @@ var config = {
     };
 var game= new Phaser.Game(config)
 
-function preload(){
-    
-    this.load.image('car', 'Car.png');    
+function preload(){   
     this.load.spritesheet('player', 
         'character.png',
         { frameWidth: 32, frameHeight: 48 }
     );  
+    this.load.image("ground", "nicetiles.png");
+    this.load.image("tiles", "nicetiles.png");
+    this.load.tilemapTiledJSON("map", "nicemap.json");
 }
 function create(){
-    player= this.physics.add.sprite(100, 100, 'player');
+    map = this.make.tilemap({ key: "map", tileWidth: 64, tileHeight: 64});
+    tileset = map.addTilesetImage("nicetiles","tiles");
+    layer = map.createLayer("TileLayer1", tileset, 0, 0);
     
+    player= this.physics.add.sprite(100, 100, 'player');
+    //collisionLayer = map.createLayer('collisionlayer', tileset);
+    this.physics.add.collider(player, layer);
+    layer.setCollisionBetween(2, 2);
+
     player.setBounce(0);
     player.setGravity((0,0));
+
     
+    
+
     player.setCollideWorldBounds(true);
 
     this.anims.create({
