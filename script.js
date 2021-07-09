@@ -1,6 +1,8 @@
 var playerVelocity = 150;
 var score = 0;
+var lives = 3;
 var scoreText;
+var livesText;
 var TaxiX = 1100;
 var VelocityCar1 = 400;
 var config = {        
@@ -13,7 +15,7 @@ var config = {
         
         arcade: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
         }
     },
     scene: {preload: preload,  
@@ -64,7 +66,18 @@ function collectStar (player, star){
 }
 
 function PlayerVehicleCollision(player, vehicle) {
-    window.alert("You Suck Looser");
+    if (lives == 1) {
+
+        if(alert('You Suck Looser!')){}
+        else  window.location.reload();   
+
+    }else{
+        lives = lives - 1;
+        livesText.setText('lives: ' + lives);
+        player.setX(100);
+        player.setY(100);
+    }
+    
     
 }
 function DrawVehicles(th){
@@ -75,15 +88,19 @@ function DrawVehicles(th){
     Taxi= th.physics.add.sprite(TaxiX, 345, 'Taxi').setScale(0.5).setVelocityX(VelocityCar1).refreshBody();
     Taxi2= th.physics.add.sprite(10*64 +34, 550, 'Taxi2').setScale(0.5).setVelocityY(-VelocityCar1).refreshBody();
 
-    Audi.body.setSize(210, 100, 50, 25);
-    Audi2.body.setSize(100, 210, 50, 25);
-    Taxi.body.setSize(210, 100, 50, 25);
-    Taxi2.body.setSize(100, 210, 50, 25);
-    MiniTruck.body.setSize(210, 100, 50, 25);
-    Police.body.setSize(210, 100, 50, 25);
+    Audi.body.setSize(210, 90, 50, 25);
+    Audi2.body.setSize(90, 210, 50, 25);
+    Taxi.body.setSize(210, 90, 50, 25);
+    Taxi2.body.setSize(90, 210, 50, 25);
+    MiniTruck.body.setSize(210, 90, 50, 25);
+    Police.body.setSize(210, 90, 50, 25);
 
     th.physics.add.overlap(player, Taxi, PlayerVehicleCollision, null, this);
     th.physics.add.overlap(player, Audi, PlayerVehicleCollision, null, this);
+    th.physics.add.overlap(player, Taxi2, PlayerVehicleCollision, null, this);
+    th.physics.add.overlap(player, Audi2, PlayerVehicleCollision, null, this);
+    th.physics.add.overlap(player, MiniTruck, PlayerVehicleCollision, null, this);
+    th.physics.add.overlap(player, Police, PlayerVehicleCollision, null, this);
 
 }
 
@@ -96,6 +113,7 @@ function create(){
     
     //Player
     player= this.physics.add.sprite(100, 100, 'player');
+    player.body.setSize(18, 44, 50, 25);
     
     //Vehicles
     DrawVehicles(this);
@@ -105,6 +123,7 @@ function create(){
 
     //Text
     scoreText = this.add.text(20, 20, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    livesText = this.add.text(20, 50, 'lives: 3', { fontSize: '32px', fill: '#000' });
     
     //Player Collison
     this.physics.add.collider(player, layer);
@@ -248,54 +267,8 @@ function MoveCars() {
     }
 }
 
+
 function checkTrafficCollision(th) {
-    if(th.physics.overlap(Taxi, Audi2) ){
-        Taxi.setVelocityX(0);
-    }else{
-        Taxi.setVelocityX(VelocityCar1);
-    }
-    if(th.physics.overlap(Audi, Audi2) ){
-        Audi.setVelocityX(0);
-    }else{
-        Audi.setVelocityX(VelocityCar1);
-    }
-
-    if(th.physics.overlap(Taxi, Taxi2) ){
-        Taxi.setVelocityX(0);
-    }else{
-        Taxi.setVelocityX(VelocityCar1);
-    }
-    if(th.physics.overlap(Audi, Taxi2) ){
-        Taxi2.setVelocityY(0);
-    }else{
-        Taxi2.setVelocityY(-VelocityCar1);
-    }
-
-
-    if(th.physics.overlap(Police, Audi2) ){
-        Audi2.setVelocityY(0);
-    }else{
-        Audi2.setVelocityY(VelocityCar1);
-    }
-    if(th.physics.overlap(MiniTruck, Audi2) ){
-        Audi2.setVelocityY(0);
-    }else{
-        Audi2.setVelocityY(VelocityCar1);
-    }
-
-    if(th.physics.overlap(MiniTruck, Taxi2) ){
-        Taxi2.setVelocityY(0);
-    }else{
-        Taxi2.setVelocityY(-VelocityCar1);
-    }
-    if(th.physics.overlap(Police, Taxi2) ){
-        Taxi2.setVelocityY(0);
-    }else{
-        Taxi2.setVelocityY(-VelocityCar1);
-    }
-}
-
-function checkTrafficCollision2(th) {
     if(th.physics.overlap(Taxi, Audi2) ){
         Audi2.setVelocityY(0);
     }else{
@@ -344,8 +317,8 @@ function checkTrafficCollision2(th) {
 
 function update(){
     MoveCars();
-    //checkTrafficCollision(this);
-    checkTrafficCollision2(this);
+    
+    checkTrafficCollision(this);
     cursors = this.input.keyboard.createCursorKeys();
     playerMovement();
 
