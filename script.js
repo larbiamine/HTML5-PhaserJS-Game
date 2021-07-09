@@ -231,16 +231,16 @@ function DrawStars(th) {
 
 
 
-    var rect = new Phaser.Geom.Rectangle(20, 20,556 ,  236);
+    var rect = new Phaser.Geom.Rectangle(20, 20,530 ,  200);
     Phaser.Actions.RandomRectangle(stars1.getChildren(), rect);
 
-    rect = new Phaser.Geom.Rectangle(0, 388,556 ,  236);
+    rect = new Phaser.Geom.Rectangle(0, 398,556 ,  200);
     Phaser.Actions.RandomRectangle(stars2.getChildren(), rect);
     
-    rect = new Phaser.Geom.Rectangle(11 * 64  +20, 368,556 ,  236);
+    rect = new Phaser.Geom.Rectangle(11 * 64  +20, 388,556 ,  200);
     Phaser.Actions.RandomRectangle(stars3.getChildren(), rect);
     
-    rect = new Phaser.Geom.Rectangle(11 * 64  +20, 11*64+40,556 ,  3*64);
+    rect = new Phaser.Geom.Rectangle(11 * 64  +20, 11*64+80,530 ,  3*64-40);
     Phaser.Actions.RandomRectangle(stars4.getChildren(), rect);
 
     th.physics.add.overlap(player, redstar1, collectRedStar, null, this);
