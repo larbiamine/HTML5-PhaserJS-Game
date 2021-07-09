@@ -68,7 +68,7 @@ function collectStar (player, star){
 function PlayerVehicleCollision(player, vehicle) {
     if (lives == 1) {
 
-        if(alert('You Suck Looser!')){}
+        if(alert('You Lose!')){}
         else  window.location.reload();   
 
     }else{
@@ -132,11 +132,18 @@ function create(){
     player.setGravity((0,0));
     player.setCollideWorldBounds(true);
 
+    //Go To Function gameover when player hits finish tile id=5
+    //map.setTileIndexCallback(5, gameover, this);
+
     //Player Animations
     playerAnimations();
      
 } 
-
+function gameover() {
+    console.log("nice");
+    if(alert('You Win! \nYour score:'+score+"\n Lives Left :"+lives)){}
+    else  window.location.reload();  
+}
 
 function DrawStars(th) {
 
@@ -264,7 +271,7 @@ function MoveCars() {
     }
     if (MiniTruck.x >1350) {
         MiniTruck.setX(0);
-    }
+    } 
 }
 
 
@@ -288,8 +295,6 @@ function checkTrafficCollision(th) {
                 }
             }
         }
-
-
     }
 
     if(th.physics.overlap(Taxi, Taxi2) ){
@@ -314,11 +319,16 @@ function checkTrafficCollision(th) {
     }
     
 }
+function checkWin() {
+    if (player.x > 1216 && player.y < 30) {
+        gameover();
+    }
+}
 
 function update(){
     MoveCars();
-    
-    checkTrafficCollision(this);
+    checkWin()
+;    checkTrafficCollision(this);
     cursors = this.input.keyboard.createCursorKeys();
     playerMovement();
 
