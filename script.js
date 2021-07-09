@@ -7,11 +7,13 @@ var config = {
     type: Phaser.AUTO,
     width: 1280,
     height: 960,
+
     physics: {
         default: 'arcade',
+        
         arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
         }
     },
     scene: {preload: preload,  
@@ -66,12 +68,20 @@ function PlayerVehicleCollision(player, vehicle) {
     
 }
 function DrawVehicles(th){
-    Audi= th.physics.add.sprite(1200, 290, 'Audi').setScale(0.5).setVelocityX(-VelocityCar1);
-    Police= th.physics.add.sprite(100, 10*64 + 34, 'Police').setScale(0.5).setVelocityX(-VelocityCar1);
-    MiniTruck= th.physics.add.sprite(750, 11*64 + 34, 'MiniTruck').setScale(0.5).setVelocityX(VelocityCar1);
-    Audi2= th.physics.add.sprite(9*64 +34, 450, 'Audi2').setScale(0.5).setVelocityY(VelocityCar1);
-    Taxi= th.physics.add.sprite(TaxiX, 345, 'Taxi').setScale(0.5).setVelocityX(VelocityCar1);
-    Taxi2= th.physics.add.sprite(10*64 +34, 550, 'Taxi2').setScale(0.5).setVelocityY(-VelocityCar1);
+    Audi= th.physics.add.sprite(1200, 290, 'Audi').setScale(0.5).setVelocityX(-VelocityCar1).refreshBody();
+    Police= th.physics.add.sprite(100, 10*64 + 34, 'Police').setScale(0.5).setVelocityX(-VelocityCar1).refreshBody();
+    MiniTruck= th.physics.add.sprite(750, 11*64 + 34, 'MiniTruck').setScale(0.5).setVelocityX(VelocityCar1).refreshBody();
+    Audi2= th.physics.add.sprite(9*64 +34, 450, 'Audi2').setScale(0.5).setVelocityY(VelocityCar1).refreshBody();
+    Taxi= th.physics.add.sprite(TaxiX, 345, 'Taxi').setScale(0.5).setVelocityX(VelocityCar1).refreshBody();
+    Taxi2= th.physics.add.sprite(10*64 +34, 550, 'Taxi2').setScale(0.5).setVelocityY(-VelocityCar1).refreshBody();
+
+    Audi.body.setSize(210, 100, 50, 25);
+    Audi2.body.setSize(100, 210, 50, 25);
+    Taxi.body.setSize(210, 100, 50, 25);
+    Taxi2.body.setSize(100, 210, 50, 25);
+    MiniTruck.body.setSize(210, 100, 50, 25);
+    Police.body.setSize(210, 100, 50, 25);
+
     th.physics.add.overlap(player, Taxi, PlayerVehicleCollision, null, this);
     th.physics.add.overlap(player, Audi, PlayerVehicleCollision, null, this);
 
@@ -240,21 +250,20 @@ function MoveCars() {
 
 function checkTrafficCollision(th) {
     if(th.physics.overlap(Taxi, Audi2) ){
-        Audi2.setVelocityY(0);
+        Taxi.setVelocityX(0);
     }else{
-        Audi2.setAccelerationY(20);
-        Audi2.setVelocityY(VelocityCar1);
+        Taxi.setVelocityX(VelocityCar1);
     }
     if(th.physics.overlap(Audi, Audi2) ){
-        Audi2.setVelocityY(0);
+        Audi.setVelocityX(0);
     }else{
-        Audi2.setVelocityY(VelocityCar1);
+        Audi.setVelocityX(VelocityCar1);
     }
 
     if(th.physics.overlap(Taxi, Taxi2) ){
-        Taxi2.setVelocityY(0);
+        Taxi.setVelocityX(0);
     }else{
-        Taxi2.setVelocityY(-VelocityCar1);
+        Taxi.setVelocityX(VelocityCar1);
     }
     if(th.physics.overlap(Audi, Taxi2) ){
         Taxi2.setVelocityY(0);
@@ -271,7 +280,6 @@ function checkTrafficCollision(th) {
     if(th.physics.overlap(MiniTruck, Audi2) ){
         Audi2.setVelocityY(0);
     }else{
-        Audi2.setAccelerationY(1);
         Audi2.setVelocityY(VelocityCar1);
     }
 
@@ -285,13 +293,59 @@ function checkTrafficCollision(th) {
     }else{
         Taxi2.setVelocityY(-VelocityCar1);
     }
+}
 
+function checkTrafficCollision2(th) {
+    if(th.physics.overlap(Taxi, Audi2) ){
+        Audi2.setVelocityY(0);
+    }else{
+        Audi2.setVelocityY(VelocityCar1);
+        if(th.physics.overlap(Audi, Audi2) ){
+            Audi2.setVelocityY(0);
+        }else{
+            Audi2.setVelocityY(VelocityCar1);
+            if(th.physics.overlap(Police, Audi2) ){
+                Audi2.setVelocityY(0);
+            }else{
+                Audi2.setVelocityY(VelocityCar1);
+                if(th.physics.overlap(MiniTruck, Audi2) ){
+                    Audi2.setVelocityY(0);
+                }else{
+                    Audi2.setVelocityY(VelocityCar1);
+                }
+            }
+        }
+
+
+    }
+
+    if(th.physics.overlap(Taxi, Taxi2) ){
+        Taxi2.setVelocityY(0);
+    }else{
+        Taxi2.setVelocityY(VelocityCar1);
+        if(th.physics.overlap(Audi, Taxi2) ){
+            Taxi2.setVelocityY(0);
+        }else{
+            Taxi2.setVelocityY(-VelocityCar1);
+            if(th.physics.overlap(MiniTruck, Taxi2) ){
+                Taxi2.setVelocityY(0);
+            }else{
+                Taxi2.setVelocityY(-VelocityCar1);
+                if(th.physics.overlap(Police, Taxi2) ){
+                    Taxi2.setVelocityY(0);
+                }else{
+                    Taxi2.setVelocityY(-VelocityCar1);
+                }
+            }
+        }
+    }
     
 }
 
 function update(){
     MoveCars();
-    checkTrafficCollision(this);
+    //checkTrafficCollision(this);
+    checkTrafficCollision2(this);
     cursors = this.input.keyboard.createCursorKeys();
     playerMovement();
 
