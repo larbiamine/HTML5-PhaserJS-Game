@@ -142,9 +142,9 @@ function create(){
     DrawStars(this);
 
     //affichage du Text du score, Vies restantes et le temp restant
-    scoreText = this.add.text(20, 10, 'Score: 0', { font: "32px Consolas", fill: '#000' });
-    livesText = this.add.text(20, 40, 'lives: 3', { font: "32px Consolas", fill: '#000' });
-    TimeText = this.add.text(220, 10, 'Time Left: ' + Time(initialTime),{ font: "32px Consolas", fill: '#000' });
+    scoreText = this.add.text(740, 40, 'Score: 0', { font: "32px Consolas", fill: '#000' });
+    livesText = this.add.text(740, 70, 'lives: 3', { font: "32px Consolas", fill: '#000' });
+    TimeText = this.add.text(740, 10, 'Time Left: ' + Time(initialTime),{ font: "32px Consolas", fill: '#000' });
 
 
     //Collison du joueur avec la map ( tiles des routes (id = 2) )
@@ -397,7 +397,7 @@ function update(){
     checkTrafficCollision(this);
 
     cursors = this.input.keyboard.createCursorKeys();
-    
+
     //metre a jour la position de player quand le joueur bouge
     playerMovement();
 
