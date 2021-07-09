@@ -5,6 +5,7 @@ var scoreText;
 var livesText;
 var TaxiX = 1100;
 var VelocityCar1 = 400;
+var initialTime = 500;
 var config = {        
     type: Phaser.AUTO,
     width: 1280,
@@ -112,7 +113,7 @@ function create(){
     layer = map.createLayer("TileLayer1", tileset, 0, 0);
     
     //Player
-    player= this.physics.add.sprite(100, 100, 'player');
+    player= this.physics.add.sprite(1200, 100, 'player');
     player.body.setSize(18, 44, 50, 25);
     
     //Vehicles
@@ -122,8 +123,8 @@ function create(){
     DrawStars(this);
 
     //Text
-    scoreText = this.add.text(20, 20, 'Score: 0', { fontSize: '32px', fill: '#000' });
-    livesText = this.add.text(20, 50, 'lives: 3', { fontSize: '32px', fill: '#000' });
+    scoreText = this.add.text(20, 10, 'Score: 0', { font: "32px Consolas", fill: '#000' });
+    livesText = this.add.text(20, 40, 'lives: 3', { font: "32px Consolas", fill: '#000' });
     
     //Player Collison
     this.physics.add.collider(player, layer);
@@ -137,12 +138,50 @@ function create(){
 
     //Player Animations
     playerAnimations();
+
+
+    
+
+    TimeText = this.add.text(220, 10, 'Time Left: ' + Time(initialTime),{ font: "32px Consolas", fill: '#000' });
+
+ 
+
+    // Each 1000 ms call onEvent
+    timedEvent = this.time.addEvent({ delay: 1000, callback: onEvent, callbackScope: this, loop: true });
+
      
 } 
+
+function Time(S){
+    var minutes = Math.floor(S/60);
+    var seconds = S%60;
+    seconds = seconds.toString().padStart(2,'0');
+    var string = minutes+":"+seconds
+    return string;
+}
+
+function onEvent (){
+    initialTime -= 1; // One second
+    TimeText.setText('Time Left: ' + Time(initialTime));
+    
+}
+
+function checktimeOver() {
+    if (initialTime == 0) {
+        
+        if(alert('Time is Over You Lose!')){}
+        else  window.location.reload();   
+
+    }
+    
+}
+
 function gameover() {
-    console.log("nice");
-    if(alert('You Win! \nYour score:'+score+"\n Lives Left :"+lives)){}
-    else  window.location.reload();  
+    if (score == 44) {
+        if(alert('You Win! \nYour score:'+score+"\n Lives Left :"+lives)){}
+        else  window.location.reload(); 
+    }
+ 
 }
 
 function DrawStars(th) {
@@ -154,7 +193,7 @@ function DrawStars(th) {
     });
     redstar2 = th.physics.add.group({
         key: 'redstar',
-        repeat: 1,
+        repeat: 0,
         setXY: { x: 64 * 14 + 30, y: 64 * 11 }
     });
 
@@ -327,8 +366,9 @@ function checkWin() {
 
 function update(){
     MoveCars();
-    checkWin()
-;    checkTrafficCollision(this);
+    checkWin();
+    checktimeOver();
+    checkTrafficCollision(this);
     cursors = this.input.keyboard.createCursorKeys();
     playerMovement();
 
