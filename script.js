@@ -1,6 +1,8 @@
 var playerVelocity = 150;
 var score = 0;
 var scoreText;
+var TaxiX = 1100;
+var VelocityCar1 = 400;
 var config = {        
     type: Phaser.AUTO,
     width: 1280,
@@ -20,16 +22,38 @@ var config = {
 var game= new Phaser.Game(config)
 
 function preload(){   
+    //Player
     this.load.spritesheet('player', 
         'character.png',
         { frameWidth: 32, frameHeight: 48 }
-    );  
-    this.load.image("ground", "nicetiles.png");
-    this.load.image("star", "star.png");
+    ); 
+    
+    //Map 
     this.load.image("tiles", "nicetiles.png");
     this.load.tilemapTiledJSON("map", "nicemap.json");
+
+    //Vehicles
+    this.load.image("Audi", "Audi.png");
+    this.load.image("Audi2", "Audi2.png");
+    this.load.image("MiniTruck", "Mini_truck.png");
+    this.load.image("Taxi2", "taxi2.png");
+    this.load.image("Taxi", "taxi.png");
+    this.load.image("Car", "Car.png");
+    this.load.image("Police", "Police.png");
+
+    //Stars
+    this.load.image("star", "star.png");
+    this.load.image("redstar", "redStar.png");
+    
+    
 }
 
+function collectRedStar (player, star){
+    star.disableBody(true, true);
+    score = score + 10
+    scoreText.setText('Score: ' + score);
+    
+}
 function collectStar (player, star){
     star.disableBody(true, true);
     score = score + 1
@@ -37,76 +61,110 @@ function collectStar (player, star){
     
 }
 
+function PlayerVehicleCollision(player, vehicle) {
+    window.alert("You Suck Looser");
+    
+}
+function DrawVehicles(th){
+    Audi= th.physics.add.sprite(1200, 290, 'Audi').setScale(0.5).setVelocityX(-VelocityCar1);
+    Police= th.physics.add.sprite(100, 10*64 + 34, 'Police').setScale(0.5).setVelocityX(-VelocityCar1);
+    MiniTruck= th.physics.add.sprite(750, 11*64 + 34, 'MiniTruck').setScale(0.5).setVelocityX(VelocityCar1);
+    Audi2= th.physics.add.sprite(9*64 +34, 450, 'Audi2').setScale(0.5).setVelocityY(VelocityCar1);
+    Taxi= th.physics.add.sprite(TaxiX, 345, 'Taxi').setScale(0.5).setVelocityX(VelocityCar1);
+    Taxi2= th.physics.add.sprite(10*64 +34, 550, 'Taxi2').setScale(0.5).setVelocityY(-VelocityCar1);
+    th.physics.add.overlap(player, Taxi, PlayerVehicleCollision, null, this);
+    th.physics.add.overlap(player, Audi, PlayerVehicleCollision, null, this);
+
+}
+
 function create(){
 
+    //Creating Map
     map = this.make.tilemap({ key: "map", tileWidth: 64, tileHeight: 64});
     tileset = map.addTilesetImage("nicetiles","tiles");
     layer = map.createLayer("TileLayer1", tileset, 0, 0);
     
-    
+    //Player
     player= this.physics.add.sprite(100, 100, 'player');
+    
+    //Vehicles
+    DrawVehicles(this);
 
-    // stars = this.physics.add.group({
-    //     key: 'star',
-    //     repeat: 50,
-    //     setXY: { x: Phaser.Math.RND.between(0, 800), 
-    //              y: Phaser.Math.RND.between(0, 600), 
-    //              stepX: 50, stepY: 75 }
-    // });
+    //Stars
+    DrawStars(this);
 
-    stars1 = this.physics.add.group({
+    //Text
+    scoreText = this.add.text(20, 20, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    
+    //Player Collison
+    this.physics.add.collider(player, layer);
+    layer.setCollisionBetween(2, 2);
+    player.setBounce(0);
+    player.setGravity((0,0));
+    player.setCollideWorldBounds(true);
+
+    //Player Animations
+    playerAnimations();
+     
+} 
+
+
+function DrawStars(th) {
+
+    redstar1 = th.physics.add.group({
+        key: 'redstar',
+        repeat: 0,
+        setXY: { x: 64 * 4 + 30, y: 64 * 5 }
+    });
+    redstar2 = th.physics.add.group({
+        key: 'redstar',
+        repeat: 1,
+        setXY: { x: 64 * 14 + 30, y: 64 * 11 }
+    });
+
+
+    stars1 = th.physics.add.group({
         key: 'star',
         repeat: 5,
     });
 
-    stars2 = this.physics.add.group({
+    stars2 = th.physics.add.group({
         key: 'star',
         repeat: 5,
     });
 
-    stars3 = this.physics.add.group({
+    stars3 = th.physics.add.group({
         key: 'star',
         repeat: 5,
     });
     
-    stars4 = this.physics.add.group({
+    stars4 = th.physics.add.group({
         key: 'star',
         repeat: 5,
     });
+
+
 
     var rect = new Phaser.Geom.Rectangle(20, 20,556 ,  236);
     Phaser.Actions.RandomRectangle(stars1.getChildren(), rect);
 
-    rect = new Phaser.Geom.Rectangle(0, 368,556 ,  236);
+    rect = new Phaser.Geom.Rectangle(0, 388,556 ,  236);
     Phaser.Actions.RandomRectangle(stars2.getChildren(), rect);
     
     rect = new Phaser.Geom.Rectangle(11 * 64  +20, 368,556 ,  236);
     Phaser.Actions.RandomRectangle(stars3.getChildren(), rect);
     
-    rect = new Phaser.Geom.Rectangle(11 * 64  +20, 20,556 ,  236);
+    rect = new Phaser.Geom.Rectangle(11 * 64  +20, 11*64+40,556 ,  3*64);
     Phaser.Actions.RandomRectangle(stars4.getChildren(), rect);
 
-    this.physics.add.overlap(player, stars1, collectStar, null, this);
-    this.physics.add.overlap(player, stars2, collectStar, null, this);
-    this.physics.add.overlap(player, stars3, collectStar, null, this);
-    this.physics.add.overlap(player, stars4, collectStar, null, this);
-
-
-    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
-    this.physics.add.collider(player, layer);
-    layer.setCollisionBetween(2, 2);
-
-    player.setBounce(0);
-    player.setGravity((0,0));
-
+    th.physics.add.overlap(player, redstar1, collectRedStar, null, this);
+    th.physics.add.overlap(player, redstar2, collectRedStar, null, this);
+    th.physics.add.overlap(player, stars1, collectStar, null, this);
+    th.physics.add.overlap(player, stars2, collectStar, null, this);
+    th.physics.add.overlap(player, stars3, collectStar, null, this);
+    th.physics.add.overlap(player, stars4, collectStar, null, this);
     
-    
-
-    player.setCollideWorldBounds(true);
-
-    playerAnimations();
-     
-} 
+}
 
 function playerAnimations(){
     game.anims.create({
@@ -159,7 +217,81 @@ function playerMovement() {
     }
 }
 
+function MoveCars() {
+    if (Audi.x < 0) {
+        Audi.setX(1350);
+    }
+    if (Taxi.x >1350) {
+        Taxi.setX(0);
+    }
+    if (Taxi2.y < -100) {
+        Taxi2.setY(1200);
+    }
+    if (Audi2.y >1200) {
+        Audi2.setY(-100);
+    }
+    if (Police.x < 0) {
+        Police.setX(1350);
+    }
+    if (MiniTruck.x >1350) {
+        MiniTruck.setX(0);
+    }
+}
+
+function checkTrafficCollision(th) {
+    if(th.physics.overlap(Taxi, Audi2) ){
+        Audi2.setVelocityY(0);
+    }else{
+        Audi2.setAccelerationY(20);
+        Audi2.setVelocityY(VelocityCar1);
+    }
+    if(th.physics.overlap(Audi, Audi2) ){
+        Audi2.setVelocityY(0);
+    }else{
+        Audi2.setVelocityY(VelocityCar1);
+    }
+
+    if(th.physics.overlap(Taxi, Taxi2) ){
+        Taxi2.setVelocityY(0);
+    }else{
+        Taxi2.setVelocityY(-VelocityCar1);
+    }
+    if(th.physics.overlap(Audi, Taxi2) ){
+        Taxi2.setVelocityY(0);
+    }else{
+        Taxi2.setVelocityY(-VelocityCar1);
+    }
+
+
+    if(th.physics.overlap(Police, Audi2) ){
+        Audi2.setVelocityY(0);
+    }else{
+        Audi2.setVelocityY(VelocityCar1);
+    }
+    if(th.physics.overlap(MiniTruck, Audi2) ){
+        Audi2.setVelocityY(0);
+    }else{
+        Audi2.setAccelerationY(1);
+        Audi2.setVelocityY(VelocityCar1);
+    }
+
+    if(th.physics.overlap(MiniTruck, Taxi2) ){
+        Taxi2.setVelocityY(0);
+    }else{
+        Taxi2.setVelocityY(-VelocityCar1);
+    }
+    if(th.physics.overlap(Police, Taxi2) ){
+        Taxi2.setVelocityY(0);
+    }else{
+        Taxi2.setVelocityY(-VelocityCar1);
+    }
+
+    
+}
+
 function update(){
+    MoveCars();
+    checkTrafficCollision(this);
     cursors = this.input.keyboard.createCursorKeys();
     playerMovement();
 
