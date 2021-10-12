@@ -3,8 +3,7 @@
 PHASER
 ================
 
-Phaser is a 2D game framework used for making HTML5 games for desktop and mobile. 
-It is free software developed by Photon Storm. 
+Phaser is a 2D game framework developed by Photon Storm used for making HTML5 games for desktop and mobile.  
 Phaser uses both a Canvas and WebGL renderer internally and can automatically swap between them based on browser support
 
 
@@ -15,3 +14,6 @@ on time and Without being hit by vehicles.
 
 
 ![alt text](Game.gif "Logo Title Text 1")
+
+For the 2D scene i Generated the map using The Flexible Map editor  [Tiled](https://www.mapeditor.org/).  
+Physics Propreties consists of collision between the player and the vehicles. 
