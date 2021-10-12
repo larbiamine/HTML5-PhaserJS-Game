@@ -15,5 +15,13 @@ on time and Without being hit by vehicles.
 
 ![alt text](Game.gif "Logo Title Text 1")
 
-For the 2D scene i Generated the map using The Flexible Map editor  [Tiled](https://www.mapeditor.org/).  
-Physics Propreties consists of collision between the player and the vehicles. 
+- For the 2D scene i Generated the map using The Flexible Map editor  [Tiled](https://www.mapeditor.org/).  
+- The physics Propreties consists of collision between the player and the vehicles. 
+- The vehicles collides at some point so i had to come up with some sort of traffic rules to prevent that,  
+  so i gave the priority to the center road, the other vehicles had to stop while there is a car on the central road in their way.  
+  
+To-do:
+----------
+- Trajectories: the vehicles can change directions (Gotta come up with more traffic rules for that)  
+- Levels: have more levels with difficulty rising with each level up.  
+- PowerUp: figure out some powerups, maybe more health or invincibility for a short period of time.  
